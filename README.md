@@ -34,9 +34,10 @@ Finanzierungsrunde gepflegt.
 
 ## Supabase aktivieren
 
-Die Website ist vollständig statisch. Ohne Supabase funktionieren Vorschläge
-und Stimmen lokal im Browser. Supabase kann zusätzlich gemeinsame Vorschläge,
-Bilder, anonyme Sitzungen und Stimmen für alle Besucher synchronisieren.
+Die Website ist vollständig statisch und läuft auf GitHub Pages. Gemeinsame
+Vorschläge, Bilder und Stimmen für alle Besucher benötigen Supabase als
+Backend. Ohne Supabase bleiben Vorschläge und Stimmen lokal im jeweiligen
+Browser gespeichert.
 
 1. Ein kostenloses Supabase-Projekt erstellen.
 2. Unter **Authentication > Providers > Anonymous Sign-Ins** anonyme

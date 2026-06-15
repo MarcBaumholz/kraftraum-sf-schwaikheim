@@ -60,6 +60,6 @@ export const seedEquipment: EquipmentItem[] = [
   }
 ];
 
-export const quadRackImage = asset("quad-rack.webp");
+export const squatRackImage = asset("squat-rack.webp");
 export const heroImage = asset("kraftraum-hero.webp");
 export const fallbackImage = asset("image-fallback.webp");

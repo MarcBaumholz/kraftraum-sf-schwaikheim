@@ -31,8 +31,12 @@ describe("App", () => {
       })
     ).toBeVisible();
     expect(screen.getByText("Rückenstrecker")).toBeVisible();
-    expect(screen.getByText(/auf diesem gerät gespeichert/i))
-      .toBeVisible();
+    expect(
+      screen.getByText(/funktionieren auf diesem gerät/i)
+    ).toBeVisible();
+    expect(
+      screen.getByText(/supabase aktiviert werden/i)
+    ).toBeVisible();
   });
 
   it("loads shared items and applies an optimistic upvote", async () => {

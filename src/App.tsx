@@ -8,9 +8,9 @@ import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { SuggestionForm } from "./components/SuggestionForm";
 import {
-  quadRackImage,
   seedEquipment,
-  siteConfig
+  siteConfig,
+  squatRackImage
 } from "./config/site";
 import { nextVote, sortEquipment } from "./lib/equipment";
 import {
@@ -150,7 +150,11 @@ export default function App({ repository = defaultRepository }: AppProps) {
     try {
       const created = await repository.submit(input);
       setItems((current) => sortEquipment([created, ...current]));
-      setMessage("Dein Vorschlag ist jetzt für alle sichtbar.");
+      setMessage(
+        repository.mode === "live"
+          ? "Dein Vorschlag ist jetzt für alle sichtbar."
+          : "Dein Vorschlag ist auf diesem Gerät gespeichert. Für gemeinsame Vorschläge muss Supabase aktiviert werden."
+      );
     } catch {
       setError(
         "Der Vorschlag konnte nicht veröffentlicht werden. Bitte prüfe deine Verbindung und versuche es erneut."
@@ -174,7 +178,7 @@ export default function App({ repository = defaultRepository }: AppProps) {
 
           <section className="milestone section">
             <div className="milestone__image">
-              <img src={quadRackImage} alt="Illustriertes Quad Rack" />
+              <img src={squatRackImage} alt="Illustriertes Squat Rack" />
               <span>
                 <Check aria-hidden="true" />
                 Geschafft
@@ -182,7 +186,7 @@ export default function App({ repository = defaultRepository }: AppProps) {
             </div>
             <div className="milestone__content">
               <p className="eyebrow">Unser erster gemeinsamer Erfolg</p>
-              <h2>Das Quad Rack steht bereits.</h2>
+              <h2>Das Squat Rack steht bereits.</h2>
               <p>
                 Die letzte Sammelaktion hat gezeigt, was wir zusammen bewegen
                 können. Jetzt gehen wir den nächsten Schritt.
@@ -214,11 +218,11 @@ export default function App({ repository = defaultRepository }: AppProps) {
               <div className="setup-banner" role="status">
                 <CircleAlert aria-hidden="true" />
                 <div>
-                  <strong>Stimmen und Vorschläge funktionieren sofort.</strong>
+                  <strong>Stimmen und Vorschläge funktionieren auf diesem Gerät.</strong>
                   <p>
-                    Ohne Supabase werden sie auf diesem Gerät gespeichert.
-                    Für gemeinsame Live-Ergebnisse können später die
-                    Supabase-Zugangsdaten ergänzt werden.
+                    Für gemeinsame Ergebnisse über alle Handys hinweg muss
+                    Supabase aktiviert werden. Bis dahin bleiben Stimmen und
+                    Vorschläge im jeweiligen Browser gespeichert.
                   </p>
                 </div>
               </div>
@@ -248,8 +252,9 @@ export default function App({ repository = defaultRepository }: AppProps) {
               <p className="eyebrow">Deine Idee zählt</p>
               <h2>Was fehlt dir noch?</h2>
               <p>
-                Poste einen Link oder ein Bild. Der Vorschlag erscheint direkt
-                und kann von allen bewertet werden.
+                Poste einen Link oder ein Bild. Mit aktivem Live-Speicher
+                erscheint dein Vorschlag für alle und kann gemeinsam bewertet
+                werden.
               </p>
               <div className="ideas__steps" aria-label="So funktioniert es">
                 <span><b>01</b> Idee einreichen</span>

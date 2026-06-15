@@ -18,7 +18,7 @@ export function Hero() {
           Gemeinsam machen wir unseren <em>Kraftraum stärker.</em>
         </h1>
         <p className="hero__lead">
-          Das Quad Rack steht. Jetzt sammeln wir im PayPal-Pool weiter und
+          Das Squat Rack steht. Jetzt sammeln wir im PayPal-Pool weiter und
           entscheiden gemeinsam, welche Ausstattung als Nächstes dazukommt.
         </p>
         <div className="hero__actions">
