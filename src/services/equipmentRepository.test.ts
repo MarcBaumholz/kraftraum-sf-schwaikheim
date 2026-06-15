@@ -6,14 +6,54 @@ import {
 } from "./equipmentRepository";
 
 describe("createEquipmentRepository", () => {
-  it("returns setup mode without public Supabase settings", async () => {
+  it("returns a working local repository without public Supabase settings", async () => {
+    localStorage.clear();
     const repository = createEquipmentRepository({ url: "", key: "" });
 
-    expect(repository.mode).toBe("setup");
-    await expect(repository.list()).resolves.toEqual([]);
-    await expect(
-      repository.vote("item", 1)
-    ).rejects.toThrow(/Supabase/i);
+    expect(repository.mode).toBe("local");
+    await expect(repository.list()).resolves.toEqual([
+      expect.objectContaining({ title: "Rückenstrecker" }),
+      expect.objectContaining({ title: "5-kg-Hanteln" }),
+      expect.objectContaining({ title: "Digitale Wanduhr" })
+    ]);
+  });
+
+  it("stores local suggestions and votes when Supabase is not configured", async () => {
+    localStorage.clear();
+    const repository = createEquipmentRepository({ url: "", key: "" });
+
+    const created = await repository.submit({
+      title: "Springseile",
+      description: "Für Warm-up und Koordination.",
+      externalUrl: "https://example.com/springseile",
+      image: null
+    });
+    await repository.vote(created.id, 1);
+
+    await expect(repository.list()).resolves.toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        title: "Springseile",
+        upvotes: 1,
+        score: 1,
+        userVote: 1
+      })
+    ]));
+  });
+
+  it("stores local votes for seeded equipment", async () => {
+    localStorage.clear();
+    const repository = createEquipmentRepository({ url: "", key: "" });
+
+    await repository.vote("11111111-1111-4111-8111-111111111111", 1);
+
+    await expect(repository.list()).resolves.toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: "11111111-1111-4111-8111-111111111111",
+        upvotes: 1,
+        score: 1,
+        userVote: 1
+      })
+    ]));
   });
 });
 

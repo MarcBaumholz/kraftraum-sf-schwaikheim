@@ -22,6 +22,11 @@ export interface SuggestionInput {
   image: File | null;
 }
 
+export interface SiteLink {
+  label: string;
+  href: string;
+}
+
 export type SuggestionErrors = Partial<
   Record<keyof SuggestionInput | "form", string>
 >;

@@ -1,6 +1,10 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 
-import { createOptionalSupabaseClient, type SupabaseSettings } from "../lib/supabase";
+import { seedEquipment } from "../config/site";
+import {
+  createOptionalSupabaseClient,
+  type SupabaseSettings
+} from "../lib/supabase";
 import type {
   EquipmentItem,
   SuggestionInput,
@@ -23,14 +27,36 @@ interface EquipmentRow {
 }
 
 export interface EquipmentRepository {
-  mode: "setup" | "live";
+  mode: "local" | "live";
   list(): Promise<EquipmentItem[]>;
   submit(input: SuggestionInput): Promise<EquipmentItem>;
   vote(itemId: string, value: VoteValue): Promise<VoteValue | null>;
 }
 
-const setupError =
-  "Supabase ist noch nicht eingerichtet. Ergänze die öffentlichen Konfigurationswerte, um Vorschläge und Votes zu aktivieren.";
+const localItemsKey = "kraftraum.local.items";
+const localVotesKey = "kraftraum.local.votes";
+
+const memoryStorage = new Map<string, string>();
+
+function storageGet(key: string): string | null {
+  try {
+    return (
+      globalThis.localStorage?.getItem(key) ?? memoryStorage.get(key) ?? null
+    );
+  } catch {
+    return memoryStorage.get(key) ?? null;
+  }
+}
+
+function storageSet(key: string, value: string) {
+  memoryStorage.set(key, value);
+
+  try {
+    globalThis.localStorage?.setItem(key, value);
+  } catch {
+    // In restricted browser modes the in-memory copy keeps the page usable.
+  }
+}
 
 export function mapEquipmentRow(row: EquipmentRow): EquipmentItem {
   return {
@@ -70,17 +96,99 @@ async function ensureAnonymousUser(client: SupabaseClient): Promise<User> {
   return data.user;
 }
 
-function setupRepository(): EquipmentRepository {
+function readLocalItems(): EquipmentItem[] {
+  const raw = storageGet(localItemsKey);
+  if (!raw) return [];
+
+  try {
+    return JSON.parse(raw) as EquipmentItem[];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalItems(items: EquipmentItem[]) {
+  storageSet(localItemsKey, JSON.stringify(items));
+}
+
+function readLocalVotes(): Record<string, VoteValue> {
+  const raw = storageGet(localVotesKey);
+  if (!raw) return {};
+
+  try {
+    return JSON.parse(raw) as Record<string, VoteValue>;
+  } catch {
+    return {};
+  }
+}
+
+function writeLocalVotes(votes: Record<string, VoteValue>) {
+  storageSet(localVotesKey, JSON.stringify(votes));
+}
+
+function applyStoredLocalVote(
+  item: EquipmentItem,
+  vote: VoteValue | null
+): EquipmentItem {
+  const upvotes = vote === 1 ? 1 : 0;
+  const downvotes = vote === -1 ? 1 : 0;
+
   return {
-    mode: "setup",
+    ...item,
+    upvotes,
+    downvotes,
+    score: upvotes - downvotes,
+    userVote: vote
+  };
+}
+
+function localRepository(): EquipmentRepository {
+  return {
+    mode: "local",
     async list() {
-      return [];
+      const votes = readLocalVotes();
+      return [...seedEquipment, ...readLocalItems()].map((item) =>
+        applyStoredLocalVote(item, votes[item.id] ?? null)
+      );
     },
-    async submit() {
-      throw new Error(setupError);
+    async submit(input) {
+      const imageUrl =
+        input.image && typeof URL.createObjectURL === "function"
+          ? URL.createObjectURL(input.image)
+          : "";
+      const created: EquipmentItem = {
+        id: crypto.randomUUID(),
+        title: input.title.trim(),
+        description: input.description.trim(),
+        externalUrl: input.externalUrl.trim() || null,
+        imageUrl,
+        estimatedPriceCents: null,
+        isSeeded: false,
+        createdAt: new Date().toISOString(),
+        upvotes: 0,
+        downvotes: 0,
+        score: 0,
+        userVote: null
+      };
+      const nextItems = [created, ...readLocalItems()];
+      writeLocalItems(nextItems);
+      return created;
     },
-    async vote() {
-      throw new Error(setupError);
+    async vote(itemId, value) {
+      const votes = readLocalVotes();
+      const current = votes[itemId] ?? null;
+      const next = current === value ? null : value;
+      const items = readLocalItems();
+
+      if (next === null) {
+        delete votes[itemId];
+      } else {
+        votes[itemId] = next;
+      }
+
+      writeLocalVotes(votes);
+      writeLocalItems(items);
+      return next;
     }
   };
 }
@@ -105,7 +213,8 @@ function liveRepository(client: SupabaseClient): EquipmentRepository {
       let imageUrl: string | null = null;
 
       if (input.image) {
-        const extension = input.image.name.split(".").pop()?.toLowerCase() ?? "webp";
+        const extension =
+          input.image.name.split(".").pop()?.toLowerCase() ?? "webp";
         const path = `${user.id}/${crypto.randomUUID()}.${extension}`;
         const { error: uploadError } = await client.storage
           .from("suggestion-images")
@@ -169,5 +278,5 @@ export function createEquipmentRepository(
   settings: SupabaseSettings
 ): EquipmentRepository {
   const client = createOptionalSupabaseClient(settings);
-  return client ? liveRepository(client) : setupRepository();
+  return client ? liveRepository(client) : localRepository();
 }

@@ -22,7 +22,7 @@ const liveItem: EquipmentItem = {
 };
 
 describe("App", () => {
-  it("shows the static equipment and setup guidance without Supabase", () => {
+  it("shows the static equipment and local voting guidance without Supabase", () => {
     render(<App />);
 
     expect(
@@ -31,7 +31,7 @@ describe("App", () => {
       })
     ).toBeVisible();
     expect(screen.getByText("Rückenstrecker")).toBeVisible();
-    expect(screen.getByText(/gemeinsame votes sind noch nicht aktiv/i))
+    expect(screen.getByText(/auf diesem gerät gespeichert/i))
       .toBeVisible();
   });
 

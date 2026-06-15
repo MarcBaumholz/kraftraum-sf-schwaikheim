@@ -18,8 +18,8 @@ export function Hero() {
           Gemeinsam machen wir unseren <em>Kraftraum stärker.</em>
         </h1>
         <p className="hero__lead">
-          Das Quad Rack steht. Jetzt sammeln und entscheiden wir gemeinsam,
-          welche Geräte als Nächstes dazukommen.
+          Das Quad Rack steht. Jetzt sammeln wir im PayPal-Pool weiter und
+          entscheiden gemeinsam, welche Ausstattung als Nächstes dazukommt.
         </p>
         <div className="hero__actions">
           <DonationButton href={siteConfig.paypalUrl} />
@@ -30,7 +30,7 @@ export function Hero() {
         </div>
         <div className="progress-card" aria-label={`Spendenfortschritt ${progress} Prozent`}>
           <div className="progress-card__header">
-            <span>Beispielhafter Sammelstand</span>
+            <span>PayPal-Pool</span>
             <strong>
               {formatCurrency(siteConfig.raisedCents)} /{" "}
               {formatCurrency(siteConfig.goalCents)}
@@ -41,7 +41,7 @@ export function Hero() {
           </div>
           <p>
             <CheckCircle2 aria-hidden="true" />
-            Beträge werden vor dem offiziellen Start aktualisiert.
+            Zielbetrag aus dem aktuellen PayPal-Pool.
           </p>
         </div>
       </div>

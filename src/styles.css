@@ -649,6 +649,7 @@ h3 {
   gap: 7px;
   align-items: center;
   align-self: flex-start;
+  min-height: 44px;
   margin-bottom: 18px;
   color: var(--red-700);
   font-size: 0.78rem;

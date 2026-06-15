@@ -1,8 +1,9 @@
-# Projekt Kraftraum
+# Kraftraum
 
-Statische Website für die aktiven Mannschaften der SF Schwaikheim Handball.
+Statische Website für die aktiven Mannschaften der Sportfreunde Schwaikheim
+Handball.
 Die Seite zeigt geplante Anschaffungen, sammelt Vorschläge und ermöglicht
-gemeinsame Up- und Downvotes.
+Up- und Downvotes.
 
 ## Lokal starten
 
@@ -21,17 +22,21 @@ npm run build
 
 ## Inhalte anpassen
 
-Vereinsname, PayPal-Link, Spendenziel und Beispielbetrag stehen zentral in
+Vereinsname, PayPal-Link, Spendenziel und aktueller Sammelstand stehen zentral in
 `src/config/site.ts`.
 
-Solange `paypalUrl` leer ist, startet die Schaltfläche keine Zahlung und zeigt
-stattdessen einen transparenten Hinweis. Preise und Sammelstand sind aktuell
-als Beispielwerte gekennzeichnet.
+Der PayPal-Pool ist aktuell hinterlegt:
+`https://www.paypal.com/pool/9q56Tvt6Af?sr=wccr`.
+
+Die Fortschrittsanzeige zeigt den Stand aus dem PayPal-Pool: 0,00 € von
+100,00 €. Die drei Gerätewerte sind als Budgetanteile dieser ersten
+Finanzierungsrunde gepflegt.
 
 ## Supabase aktivieren
 
-Die Website ist vollständig statisch. Supabase übernimmt nur gemeinsame
-Vorschläge, Bilder, anonyme Sitzungen und Votes.
+Die Website ist vollständig statisch. Ohne Supabase funktionieren Vorschläge
+und Stimmen lokal im Browser. Supabase kann zusätzlich gemeinsame Vorschläge,
+Bilder, anonyme Sitzungen und Stimmen für alle Besucher synchronisieren.
 
 1. Ein kostenloses Supabase-Projekt erstellen.
 2. Unter **Authentication > Providers > Anonymous Sign-Ins** anonyme
@@ -70,7 +75,7 @@ Neue Vorschläge erscheinen wie gewünscht sofort. Das Schema begrenzt:
 - Bilder auf JPEG, PNG oder WebP bis 5 MB
 - Uploadpfade auf die anonyme Nutzer-ID
 - Vorschläge pro anonymer Identität auf höchstens einen pro Minute
-- Votes auf eine aktive Stimme pro anonymer Identität und Gerät
+- Stimmen auf eine aktive Stimme pro anonymer Identität und Gerät
 
 Ein öffentliches Formular ohne Captcha oder persönliche Anmeldung kann
 gezielten Spam nicht vollständig verhindern. Unerwünschte Vorschläge lassen
@@ -78,7 +83,6 @@ sich im Supabase Table Editor aus `equipment_items` löschen.
 
 ## Vor öffentlicher Bewerbung ergänzen
 
-- PayPal-Spendenlink
 - Tatsächliche Gerätepreise und Spendenwerte
 - Impressumsangaben
 - Datenschutzerklärung und verantwortliche Kontaktmöglichkeit

@@ -10,7 +10,7 @@ export function Header() {
           <Dumbbell aria-hidden="true" />
         </span>
         <span>
-          <strong>{siteConfig.clubName}</strong>
+          <strong>{siteConfig.shortClubName} Handball</strong>
           <small>{siteConfig.projectName}</small>
         </span>
       </a>

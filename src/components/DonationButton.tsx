@@ -24,7 +24,7 @@ export function DonationButton({
         rel="noopener noreferrer"
       >
         <Heart aria-hidden="true" />
-        Kraftraum unterstützen
+        Zum PayPal-Pool
         <ArrowUpRight aria-hidden="true" />
       </a>
     );
@@ -38,11 +38,11 @@ export function DonationButton({
         onClick={() => setShowMessage(true)}
       >
         <Heart aria-hidden="true" />
-        Kraftraum unterstützen
+        Zum PayPal-Pool
       </button>
       {showMessage && (
         <span className="donation-action__message" role="status">
-          Der PayPal-Spendenlink folgt in Kürze.
+          Der PayPal-Pool ist noch nicht hinterlegt.
         </span>
       )}
     </span>

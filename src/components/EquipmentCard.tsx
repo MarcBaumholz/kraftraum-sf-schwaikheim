@@ -37,7 +37,7 @@ export function EquipmentCard({
             <h3>{item.title}</h3>
             {item.estimatedPriceCents !== null && (
               <p className="price">
-                ca. {formatCurrency(item.estimatedPriceCents)}
+                {formatCurrency(item.estimatedPriceCents)}
               </p>
             )}
           </div>

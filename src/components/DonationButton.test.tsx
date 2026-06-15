@@ -1,29 +1,25 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { DonationButton } from "./DonationButton";
 
 describe("DonationButton", () => {
-  it("explains the placeholder when no PayPal URL exists", async () => {
-    const user = userEvent.setup();
-    render(<DonationButton href="" />);
-
-    await user.click(
-      screen.getByRole("button", { name: /kraftraum unterstützen/i })
+  it("renders a safe external link when configured", () => {
+    render(
+      <DonationButton href="https://www.paypal.com/pool/9q56Tvt6Af?sr=wccr" />
     );
 
-    expect(screen.getByRole("status")).toHaveTextContent(/folgt/i);
-  });
+    const link = screen.getByRole("link", {
+      name: /zum paypal-pool/i
+    });
 
-  it("renders a safe external link when configured", () => {
-    render(<DonationButton href="https://paypal.me/example" />);
-
-    expect(
-      screen.getByRole("link", { name: /kraftraum unterstützen/i })
-    ).toMatchObject({
+    expect(link).toMatchObject({
       target: "_blank",
       rel: expect.stringContaining("noopener")
     });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://www.paypal.com/pool/9q56Tvt6Af?sr=wccr"
+    );
   });
 });

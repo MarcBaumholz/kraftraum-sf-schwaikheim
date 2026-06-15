@@ -74,17 +74,13 @@ function applyVote(
 
 export default function App({ repository = defaultRepository }: AppProps) {
   const [items, setItems] = useState<EquipmentItem[]>(seedEquipment);
-  const [isLoading, setIsLoading] = useState(repository.mode === "live");
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [votingIds, setVotingIds] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    if (repository.mode !== "live") {
-      return;
-    }
-
     let active = true;
     repository
       .list()
@@ -114,8 +110,6 @@ export default function App({ repository = defaultRepository }: AppProps) {
     item: EquipmentItem,
     requested: VoteValue
   ) => {
-    if (repository.mode !== "live") return;
-
     const previous = item;
     const optimistic = applyVote(item, requested);
     setVotingIds((current) => new Set(current).add(item.id));
@@ -169,7 +163,7 @@ export default function App({ repository = defaultRepository }: AppProps) {
 
   const seeded = items.filter((item) => item.isSeeded);
   const community = items.filter((item) => !item.isSeeded);
-  const isSetup = repository.mode === "setup";
+  const isLocal = repository.mode === "local";
 
   return (
     <>
@@ -211,19 +205,20 @@ export default function App({ repository = defaultRepository }: AppProps) {
               </div>
               <p>
                 Stimme für die Geräte, die unserem Training am meisten bringen.
-                Beispielpreise werden vor dem Kauf aktualisiert.
+                Die Beträge orientieren sich am aktuellen PayPal-Pool und
+                helfen bei der Priorisierung.
               </p>
             </div>
 
-            {isSetup && (
+            {isLocal && (
               <div className="setup-banner" role="status">
                 <CircleAlert aria-hidden="true" />
                 <div>
-                  <strong>Gemeinsame Votes sind noch nicht aktiv.</strong>
+                  <strong>Stimmen und Vorschläge funktionieren sofort.</strong>
                   <p>
-                    Die Seite ist bereit. Nach dem Eintragen der
-                    Supabase-Konfiguration werden Stimmen und Vorschläge für
-                    alle synchronisiert.
+                    Ohne Supabase werden sie auf diesem Gerät gespeichert.
+                    Für gemeinsame Live-Ergebnisse können später die
+                    Supabase-Zugangsdaten ergänzt werden.
                   </p>
                 </div>
               </div>
@@ -240,7 +235,7 @@ export default function App({ repository = defaultRepository }: AppProps) {
                 <EquipmentCard
                   key={item.id}
                   item={item}
-                  votingDisabled={isSetup}
+                  votingDisabled={false}
                   isVoting={votingIds.has(item.id)}
                   onVote={handleVote}
                 />
@@ -271,7 +266,7 @@ export default function App({ repository = defaultRepository }: AppProps) {
                 </div>
               </div>
               <SuggestionForm
-                disabled={isSetup}
+                disabled={false}
                 isSubmitting={isSubmitting}
                 onSubmit={handleSubmit}
               />
@@ -287,7 +282,7 @@ export default function App({ repository = defaultRepository }: AppProps) {
             <div className="section-heading">
               <div>
                 <p className="eyebrow">Aus der Mannschaft</p>
-                <h2>Community-Vorschläge</h2>
+                <h2>Vorschläge aus der Mannschaft</h2>
               </div>
               <p>Sortiert nach Stimmensaldo. Bei Gleichstand zählt die neuere Idee.</p>
             </div>
@@ -297,7 +292,7 @@ export default function App({ repository = defaultRepository }: AppProps) {
                   <EquipmentCard
                     key={item.id}
                     item={item}
-                    votingDisabled={isSetup}
+                    votingDisabled={false}
                     isVoting={votingIds.has(item.id)}
                     onVote={handleVote}
                   />

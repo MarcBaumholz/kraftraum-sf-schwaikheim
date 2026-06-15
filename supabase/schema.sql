@@ -280,24 +280,24 @@ values
   (
     '11111111-1111-4111-8111-111111111111',
     'Rückenstrecker',
-    'Für gezieltes Training der unteren Rücken- und Rumpfmuskulatur.',
-    34900,
+    'Priorität für gezieltes Training der unteren Rücken- und Rumpfmuskulatur.',
+    5000,
     true,
     '2026-06-01T08:00:00Z'
   ),
   (
     '22222222-2222-4222-8222-222222222222',
     '5-kg-Hanteln',
-    'Leichtere Gewichte für Reha, Schultertraining und Warm-up.',
-    4900,
+    'Budgetanteil für leichtere Gewichte, Reha, Schultertraining und Warm-up.',
+    2500,
     true,
     '2026-06-02T08:00:00Z'
   ),
   (
     '33333333-3333-4333-8333-333333333333',
     'Digitale Wanduhr',
-    'Große Trainingszeit für Intervalle, Pausen und Zirkel.',
-    8900,
+    'Budgetanteil für eine gut sichtbare Trainingszeit bei Intervallen, Pausen und Zirkeltraining.',
+    2500,
     true,
     '2026-06-03T08:00:00Z'
   )
